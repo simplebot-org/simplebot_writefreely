@@ -7,7 +7,9 @@ class TestPlugin:
         msg = mocker.get_one_reply("/wf_login https://write.as token")
         assert "❌" in msg.text
 
-        msgs = mocker.get_replies("/wf_login https://write.as token", addr="test@example.com")
+        msgs = mocker.get_replies(
+            "/wf_login https://write.as token", addr="test@example.com"
+        )
         assert len(msgs) == 3
 
     def test_logout(self, mocker, requests_mock) -> None:
@@ -28,10 +30,14 @@ class TestPlugin:
         msgs = mocker.get_replies("blog post", filters="simplebot_writefreely")
         assert not msgs
 
-        msg = mocker.get_one_reply("blog post", group=chat, filters="simplebot_writefreely")
+        msg = mocker.get_one_reply(
+            "blog post", group=chat, filters="simplebot_writefreely"
+        )
         assert "post-slug" in msg.text
 
-        msg = mocker.get_one_reply("# Post title\nArticle's body", group=chat, filters="simplebot_writefreely")
+        msg = mocker.get_one_reply(
+            "# Post title\nArticle's body", group=chat, filters="simplebot_writefreely"
+        )
         assert "post-slug" in msg.text
 
     @staticmethod
@@ -62,5 +68,9 @@ class TestPlugin:
                 "slug": "post-slug",
             }
         }
-        requests_mock.post("https://write.as/api/collections/test-blog-1/posts", json=data)
-        requests_mock.post("https://write.as/api/collections/test-blog-2/posts", json=data)
+        requests_mock.post(
+            "https://write.as/api/collections/test-blog-1/posts", json=data
+        )
+        requests_mock.post(
+            "https://write.as/api/collections/test-blog-2/posts", json=data
+        )
