@@ -1,0 +1,3 @@
+simplebot==1.1.1
+SQLAlchemy==1.4.3
+writefreely-py==1.1.0
