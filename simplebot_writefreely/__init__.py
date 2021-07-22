@@ -13,6 +13,19 @@ __version__ = "1.0.0"
 
 
 @simplebot.hookimpl
+def deltabot_init(bot: DeltaBot) -> None:
+    prefix = bot.get("command_prefix", scope=__name__) or ""
+
+    name = f"/{prefix}login"
+    description = f"Login to your WriteFreely instance.\nExamples: {name} https://write.as YourUser YourPassword\n{name} https://write.as YourToken"
+    bot.commands.register(func=login, name=name, help=help)
+
+    name = f"/{prefix}logout"
+    help = f"Logout from your WriteFreely instance.\nExample: {name}"
+    bot.commands.register(func=logout, name=name, help=help)
+
+
+@simplebot.hookimpl
 def deltabot_start(bot: DeltaBot) -> None:
     path = os.path.join(os.path.dirname(bot.account.db_path), __name__)
     if not os.path.exists(path):
@@ -54,13 +67,7 @@ def filter_messages(message: Message, replies: Replies) -> None:
     replies.add(text=post["collection"]["url"] + post["slug"], quote=message)
 
 
-@simplebot.command
-def wf_login(bot: DeltaBot, payload: str, message: Message, replies: Replies) -> None:
-    """Login to your WriteFreely instance.
-
-    Example: `/wf_login https://write.as YourUser YourPassword` or
-    `/wf_login https://write.as YourToken`
-    """
+def login(bot: DeltaBot, payload: str, message: Message, replies: Replies) -> None:
     sender = message.get_sender_contact()
     with session_scope() as session:
         acc = session.query(Account).filter_by(addr=sender.addr).first()
@@ -90,12 +97,7 @@ def wf_login(bot: DeltaBot, payload: str, message: Message, replies: Replies) ->
     replies.add(text="✔️Logged in")
 
 
-@simplebot.command
-def wf_logout(message: Message, replies: Replies) -> None:
-    """Logout from your WriteFreely instance.
-
-    Example: `/wf_logout`
-    """
+def logout(message: Message, replies: Replies) -> None:
     addr = message.get_sender_contact().addr
     try:
         with session_scope() as session:
