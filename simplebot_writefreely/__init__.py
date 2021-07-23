@@ -17,11 +17,11 @@ def deltabot_init(bot: DeltaBot) -> None:
     prefix = bot.get("command_prefix", scope=__name__) or ""
 
     name = f"/{prefix}login"
-    desc = f"Login to your WriteFreely instance.\nExamples: {name} https://write.as YourUser YourPassword\n{name} https://write.as YourToken"
+    desc = f"Login to your WriteFreely instance.\nExamples:\n{name} https://write.as YourUser YourPassword\n{name} https://write.as YourToken"
     bot.commands.register(func=login, name=name, help=desc)
 
     name = f"/{prefix}logout"
-    desc = f"Logout from your WriteFreely instance.\nExample: {name}"
+    desc = "Logout from your WriteFreely instance."
     bot.commands.register(func=logout, name=name, help=desc)
 
 
