@@ -83,7 +83,7 @@ def login(bot: DeltaBot, payload: str, message: Message, replies: Replies) -> No
 
     acc = Account(addr=sender.addr, host=client.host, token=client.token)
     for blog in client.get_collections():
-        g = bot.create_group("{} [WF]".format(blog["title"] or blog["alias"]), [sender])
+        g = bot.create_group(f"📝 {blog['title'] or blog['alias']}", [sender])
         acc.blogs.append(Blog(chat_id=g.id, alias=blog["alias"]))
         replies.add(
             text="All messages sent here will be published to"
