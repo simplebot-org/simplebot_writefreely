@@ -101,8 +101,14 @@ def logout(bot: DeltaBot, message: Message, replies: Replies) -> None:
         with session_scope() as session:
             acc = session.query(Account).filter_by(addr=addr).one()  # noqa
             host, token = acc.host, acc.token
+            chats = [blog.chat_id for blog in acc.blogs]
             session.delete(acc)  # noqa
         wf.client(host=host, token=token).logout()
+        for chat_id in chats:
+            try:
+                bot.get_chat(chat_id).remove_contact(bot.self_contact)
+            except ValueError as ex:
+                bot.logger.exception(ex)
         replies.add(text="✔️Logged out")
     except NoResultFound:
         replies.add(text="❌ You are not logged in.")
