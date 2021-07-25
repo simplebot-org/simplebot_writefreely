@@ -1,11 +1,11 @@
 import os
 
-import simplebot
-import writefreely as wf
-from deltachat import Chat, Contact, Message
+import simplebot  # type: ignore
+import writefreely as wf  # type: ignore
+from deltachat import Chat, Contact, Message  # type: ignore
 from simplebot import DeltaBot
-from simplebot.bot import Replies
-from sqlalchemy.exc import NoResultFound
+from simplebot.bot import Replies  # type: ignore
+from sqlalchemy.exc import NoResultFound  # type: ignore
 
 from .orm import Account, Blog, init, session_scope
 
@@ -39,16 +39,16 @@ def deltabot_member_removed(bot: DeltaBot, chat: Chat, contact: Contact) -> None
     me = bot.self_contact
     if me == contact or len(chat.get_contacts()) <= 1:
         with session_scope() as session:
-            blog = session.query(Blog).filter_by(chat_id=chat.id).first()
+            blog = session.query(Blog).filter_by(chat_id=chat.id).first()  # noqa
             if blog:
-                session.delete(blog)
+                session.delete(blog)  # noqa
 
 
 @simplebot.filter
 def filter_messages(message: Message, replies: Replies) -> None:
     """Process messages sent to WriteFreely groups."""
     with session_scope() as session:
-        blog = session.query(Blog).filter_by(chat_id=message.chat.id).first()
+        blog = session.query(Blog).filter_by(chat_id=message.chat.id).first()  # noqa
         if blog:
             host, token = blog.account.host, blog.account.token
             alias = blog.alias
@@ -70,7 +70,7 @@ def filter_messages(message: Message, replies: Replies) -> None:
 def login(bot: DeltaBot, payload: str, message: Message, replies: Replies) -> None:
     sender = message.get_sender_contact()
     with session_scope() as session:
-        acc = session.query(Account).filter_by(addr=sender.addr).first()
+        acc = session.query(Account).filter_by(addr=sender.addr).first()  # noqa
         if acc:
             replies.add(text="❌ You are already logged in.")
             return
@@ -86,24 +86,22 @@ def login(bot: DeltaBot, payload: str, message: Message, replies: Replies) -> No
         g = bot.create_group(f"📝 {blog['title'] or blog['alias']}", [sender])
         acc.blogs.append(Blog(chat_id=g.id, alias=blog["alias"]))
         replies.add(
-            text="All messages sent here will be published to"
-            " blog:\nAlias: {}\nDescription: {}".format(
-                blog["alias"], blog["description"]
-            ),
+            text="All messages sent here will be published to blog:\n"
+            f"Alias: {blog['alias']}\nDescription: {blog['description']}",
             chat=g,
         )
     with session_scope() as session:
-        session.add(acc)
+        session.add(acc)  # noqa
     replies.add(text="✔️Logged in")
 
 
-def logout(message: Message, replies: Replies) -> None:
+def logout(bot: DeltaBot, message: Message, replies: Replies) -> None:
     addr = message.get_sender_contact().addr
     try:
         with session_scope() as session:
-            acc = session.query(Account).filter_by(addr=addr).one()
+            acc = session.query(Account).filter_by(addr=addr).one()  # noqa
             host, token = acc.host, acc.token
-            session.delete(acc)
+            session.delete(acc)  # noqa
         wf.client(host=host, token=token).logout()
         replies.add(text="✔️Logged out")
     except NoResultFound:
