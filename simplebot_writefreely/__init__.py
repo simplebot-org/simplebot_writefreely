@@ -1,15 +1,22 @@
+"""hooks, commands and filters definition."""
+
 import os
 
 import simplebot  # type: ignore
 import writefreely as wf  # type: ignore
 from deltachat import Chat, Contact, Message  # type: ignore
+from pkg_resources import DistributionNotFound, get_distribution  # type: ignore
 from simplebot import DeltaBot
 from simplebot.bot import Replies  # type: ignore
 from sqlalchemy.exc import NoResultFound  # type: ignore
 
 from .orm import Account, Blog, init, session_scope
 
-__version__ = "1.0.0"
+try:
+    __version__ = get_distribution(__name__).version
+except DistributionNotFound:
+    # package is not installed
+    __version__ = "0.0.0.dev0-unknown"
 
 
 @simplebot.hookimpl
@@ -17,7 +24,8 @@ def deltabot_init(bot: DeltaBot) -> None:
     prefix = bot.get("command_prefix", scope=__name__) or ""
 
     name = f"/{prefix}login"
-    desc = f"Login to your WriteFreely instance.\nExamples:\n{name} https://write.as YourUser YourPassword\n{name} https://write.as YourToken"
+    desc = "Login to your WriteFreely instance.\nExamples:\n"
+    desc += f"{name} https://write.as YourUser YourPassword\n{name} https://write.as YourToken"
     bot.commands.register(func=login, name=name, help=desc)
 
     name = f"/{prefix}logout"
@@ -36,8 +44,7 @@ def deltabot_start(bot: DeltaBot) -> None:
 
 @simplebot.hookimpl
 def deltabot_member_removed(bot: DeltaBot, chat: Chat, contact: Contact) -> None:
-    me = bot.self_contact
-    if me == contact or len(chat.get_contacts()) <= 1:
+    if bot.self_contact == contact or len(chat.get_contacts()) <= 1:
         with session_scope() as session:
             blog = session.query(Blog).filter_by(chat_id=chat.id).first()  # noqa
             if blog:
@@ -83,12 +90,12 @@ def login(bot: DeltaBot, payload: str, message: Message, replies: Replies) -> No
 
     acc = Account(addr=sender.addr, host=client.host, token=client.token)
     for blog in client.get_collections():
-        g = bot.create_group(f"📝 {blog['title'] or blog['alias']}", [sender])
-        acc.blogs.append(Blog(chat_id=g.id, alias=blog["alias"]))
+        group = bot.create_group(f"📝 {blog['title'] or blog['alias']}", [sender])
+        acc.blogs.append(Blog(chat_id=group.id, alias=blog["alias"]))
         replies.add(
             text="All messages sent here will be published to blog:\n"
             f"Alias: {blog['alias']}\nDescription: {blog['description']}",
-            chat=g,
+            chat=group,
         )
     with session_scope() as session:
         session.add(acc)  # noqa

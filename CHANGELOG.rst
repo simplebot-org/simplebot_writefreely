@@ -5,6 +5,8 @@ Changelog
 -------------
 
 - use simpler commands and allow to set command prefix using "command_prefix" setting in the plugin scope.
+- tweak blog group's name.
+- leave blog groups when user logs out.
 
 1.0.0
 -----
