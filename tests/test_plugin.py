@@ -1,29 +1,29 @@
 class TestPlugin:
     def test_login(self, mocker, requests_mock) -> None:
         self._requests_mock(requests_mock)
-        msgs = mocker.get_replies("/wf_login https://write.as user password")
+        msgs = mocker.get_replies("/login https://write.as user password")
         assert len(msgs) == 3
 
-        msg = mocker.get_one_reply("/wf_login https://write.as token")
+        msg = mocker.get_one_reply("/login https://write.as token")
         assert "❌" in msg.text
 
         msgs = mocker.get_replies(
-            "/wf_login https://write.as token", addr="test@example.com"
+            "/login https://write.as token", addr="test@example.com"
         )
         assert len(msgs) == 3
 
     def test_logout(self, mocker, requests_mock) -> None:
         self._requests_mock(requests_mock)
-        msg = mocker.get_one_reply("/wf_logout")
+        msg = mocker.get_one_reply("/logout")
         assert "❌" in msg.text
 
-        mocker.get_replies("/wf_login https://write.as token")
-        msg = mocker.get_one_reply("/wf_logout")
+        mocker.get_replies("/login https://write.as token")
+        msg = mocker.get_one_reply("/logout")
         assert "✔" in msg.text
 
     def test_filter(self, mocker, requests_mock) -> None:
         self._requests_mock(requests_mock)
-        for msg in mocker.get_replies("/wf_login https://write.as token"):
+        for msg in mocker.get_replies("/login https://write.as token"):
             if msg.chat.is_group():
                 chat = msg.chat
                 break
