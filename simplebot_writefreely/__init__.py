@@ -2,13 +2,12 @@
 
 import os
 
-import simplebot  # type: ignore
-import writefreely as wf  # type: ignore
-from deltachat import Chat, Contact, Message  # type: ignore
-from pkg_resources import DistributionNotFound, get_distribution  # type: ignore
-from simplebot import DeltaBot
-from simplebot.bot import Replies  # type: ignore
-from sqlalchemy.exc import NoResultFound  # type: ignore
+import simplebot
+import writefreely as wf
+from deltachat import Chat, Contact, Message
+from pkg_resources import DistributionNotFound, get_distribution
+from simplebot.bot import DeltaBot, Replies
+from sqlalchemy.exc import NoResultFound
 
 from .orm import Account, Blog, init, session_scope
 
