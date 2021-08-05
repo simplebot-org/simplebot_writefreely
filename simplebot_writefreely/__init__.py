@@ -52,7 +52,7 @@ def deltabot_member_removed(bot: DeltaBot, chat: Chat, contact: Contact) -> None
 
 @simplebot.filter
 def filter_messages(message: Message, replies: Replies) -> None:
-    """Process messages sent to WriteFreely groups."""
+    """All messages sent in a WriteFreely blog group will be published to the respective blog."""
     with session_scope() as session:
         blog = session.query(Blog).filter_by(chat_id=message.chat.id).first()  # noqa
         if blog:
