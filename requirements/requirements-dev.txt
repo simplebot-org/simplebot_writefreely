@@ -3,6 +3,6 @@
 black==21.6b0
 mypy==0.910
 isort==5.9.2
-pylint==2.6.0
+pylint==2.9.6
 pylama==7.7.1
 types-pkg-resources==0.1.3
