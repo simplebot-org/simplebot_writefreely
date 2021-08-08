@@ -5,3 +5,4 @@ mypy==0.910
 isort==5.9.2
 pylint==2.6.0
 pylama==7.7.1
+types-pkg-resources==0.1.3
