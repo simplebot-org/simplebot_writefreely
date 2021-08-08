@@ -1,8 +1,8 @@
 Changelog
 *********
 
-`Unreleased`_
--------------
+`1.1.0`_
+--------
 
 - use simpler commands and allow to set command prefix using "command_prefix" setting in the plugin scope.
 - tweak blog group's name.
@@ -14,4 +14,5 @@ Changelog
 - initial release
 
 
-.. _Unreleased: https://github.com/simplebot-org/simplebot_writefreely/compare/v1.0.0...HEAD
+.. _Unreleased: https://github.com/simplebot-org/simplebot_writefreely/compare/v1.1.0...HEAD
+.. _1.1.0: https://github.com/simplebot-org/simplebot_writefreely/compare/v1.0.0...v1.1.0
