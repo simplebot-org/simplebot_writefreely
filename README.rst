@@ -23,7 +23,7 @@ DeltaChat/WriteFreely Bridge
 
 If this plugin has collisions with commands from other plugins in your bot, you can set a command prefix like ``/wf_`` for all commands::
 
-  simplebot -a bot@example.com db simplebot_writefreely/command_prefix wf_
+  simplebot -a bot@example.com db -s simplebot_writefreely/command_prefix wf_
 
 Install
 -------
