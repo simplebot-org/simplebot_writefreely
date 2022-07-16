@@ -24,7 +24,7 @@ class TestPlugin:
     def test_filter(self, mocker, requests_mock) -> None:
         self._requests_mock(requests_mock)
         for msg in mocker.get_replies("/login https://write.as token"):
-            if msg.chat.is_group():
+            if msg.chat.is_multiuser():
                 chat = msg.chat
                 break
         msgs = mocker.get_replies("blog post", filters="simplebot_writefreely")
